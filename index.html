@@ -27,20 +27,38 @@
 
     <!-- codice React con JSX -->
      <script type="text/babel">
-        // array di animali
-        const animals = ["Gatto", "Cane", "Pappagallo", "Criceto", "Pesce Rosso"];
 
         // creazione componente React
         function AnimalList(){
+            const { useState } = React;
+            const [animals, setAnimals] = useState([]);
+
+            // animali casuali da selezionare
+            const animalsChoices = ["Cane", "Gatto", "Pappagallo", "Cavallo", "Panda"];
+
+            // funzione per aggiungere l'animale casuale
+            const addRandomAnimal = () => {
+                const randomSelection = Math.floor(Math.random() * animalsChoices.length);
+                const newAnimal = animalsChoices[randomSelection];
+                if(!animals.includes(newAnimal)) {
+                    setAnimals([...animals, newAnimal]); // aggiungo l'animale alla lista
+                }
+            };
+
             return (
-                <details>
-                    <summary>Animali</summary>
-                    <ul>
-                        {animals.map((animal, index) => (
-                            <li key={index}>{animal}</li>
-                        ))}
-                    </ul>
-                </details>
+                <div>
+                    <button onClick={addRandomAnimal}>
+                        Aggiungi Animale
+                    </button>
+                    <details>
+                        <summary>Animali</summary>
+                        <ul>
+                            {animals.map((animal, index) => (
+                                <li key={index}>{animal}</li>
+                            ))}
+                        </ul>
+                    </details>
+                </div>
             )
         }
 
