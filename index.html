@@ -28,26 +28,52 @@
     <!-- codice React con JSX -->
      <script type="text/babel">
 
+        function Modal({
+            title, 
+            content, 
+            show = false, 
+            onClose = () => {},
+            onConfirm = () => {}
+        }){
+            return show && ReactDOM.createPortal(
+                <div className="modal-container">
+                    <div className="modal">
+                        <h2>{title}</h2>
+                        {content}
+                        <div>
+                            <button onClick={onConfirm}>Conferma</button>
+                            <button onClick={onClose}>Annulla</button>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )
+        }
+
         // creazione componente React
         function AnimalList(){
             const { useState } = React;
             const [animals, setAnimals] = useState([]);
+            const [show, setShow] = useState(false)
+            const [animalName, setAnimalName] = useState('');
 
             // animali casuali da selezionare
             const animalsChoices = ["Cane", "Gatto", "Pappagallo", "Cavallo", "Panda"];
 
             // funzione per aggiungere l'animale casuale
-            const addRandomAnimal = () => {
-                const randomSelection = Math.floor(Math.random() * animalsChoices.length);
-                const newAnimal = animalsChoices[randomSelection];
-                if(!animals.includes(newAnimal)) {
-                    setAnimals([...animals, newAnimal]); // aggiungo l'animale alla lista
+            const addAnimal = () => {
+                if(!animalName) {
+                    return
+                }else{
+                    setAnimals(curr => [...animals, animalName]);
+                    setAnimalName('');
+                    setShow(false);
                 }
             };
 
             return (
-                <div>
-                    <button onClick={addRandomAnimal}>
+                <>
+                    <button onClick={() => setShow(true)}>
                         Aggiungi Animale
                     </button>
                     <details>
@@ -58,7 +84,20 @@
                             ))}
                         </ul>
                     </details>
-                </div>
+                    <Modal
+                        show = {show}
+                        onClose = {() => setShow(false)}
+                        onConfirm = {addAnimal}
+                        title = "Aggiungi animale"
+                        content = {
+                            <input
+                                type = "text"
+                                value = {animalName}
+                                onChange = {e => setAnimalName(e.target.value)} 
+                            />
+                        }
+                    />
+                </>
             )
         }
 
